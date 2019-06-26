@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="vue,element组件,Slider,时间进度条,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="背景项目前端开发使用了vue框架+Element组件，但是Element中没有已经实现了的时间进度条可以直接使用，为了满足项目展示任务详情剩余时间和进度的需求，我使用Element的Slider等组件自己封装了一个TimeSlider组件。  Element原组件Slider 可以滑动 可格式化滑点输出信息  效果图及源码如下：  123456789101112131415161718192021">
+<meta name="keywords" content="vue,element组件,Slider,时间进度条">
+<meta property="og:type" content="article">
+<meta property="og:title" content="16340179_penglsh_final_report">
+<meta property="og:url" content="http://yoursite.com/2019/06/28/vue+element原生时间进度条实现/index.html">
+<meta property="og:site_name" content="积少成多">
+<meta property="og:description" content="背景项目前端开发使用了vue框架+Element组件，但是Element中没有已经实现了的时间进度条可以直接使用，为了满足项目展示任务详情剩余时间和进度的需求，我使用Element的Slider等组件自己封装了一个TimeSlider组件。  Element原组件Slider 可以滑动 可格式化滑点输出信息  效果图及源码如下：  123456789101112131415161718192021">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://github.com/penglsh/images/raw/master/sad-final-report/Slider.png">
+<meta property="og:image" content="https://github.com/penglsh/images/raw/master/sad-final-report/TimeSlider.PNG">
+<meta property="og:updated_time" content="2019-06-26T15:41:15.707Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="16340179_penglsh_final_report">
+<meta name="twitter:description" content="背景项目前端开发使用了vue框架+Element组件，但是Element中没有已经实现了的时间进度条可以直接使用，为了满足项目展示任务详情剩余时间和进度的需求，我使用Element的Slider等组件自己封装了一个TimeSlider组件。  Element原组件Slider 可以滑动 可格式化滑点输出信息  效果图及源码如下：  123456789101112131415161718192021">
+<meta name="twitter:image" content="https://github.com/penglsh/images/raw/master/sad-final-report/Slider.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/28/vue+element原生时间进度条实现/">
+
+
+
+
+
+  <title>16340179_penglsh_final_report | 积少成多</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积少成多</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Just Do It</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+      <style>
+        table{
+          border-left:1px solid #000000;border-top:1px solid #000000;
+          width: 100%;
+          word-wrap:break-word; word-break:break-all;
+        }
+        table th{
+        text-align:center;
+        }
+        table th,td{
+          border-right:1px solid #000000;border-bottom:1px solid #000000;
+        }
+      </style>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/28/vue+element原生时间进度条实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liusheng Peng">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积少成多">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">16340179_penglsh_final_report</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-28T13:27:21+08:00">
+                2019-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端开发/" itemprop="url" rel="index">
+                    <span itemprop="name">前端开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/06/28/vue+element原生时间进度条实现/" class="leancloud_visitors" data-flag-title="16340179_penglsh_final_report">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>项目前端开发使用了vue框架+Element组件，但是Element中没有已经实现了的时间进度条可以直接使用，为了满足项目展示任务详情剩余时间和进度的需求，我使用Element的Slider等组件自己封装了一个TimeSlider组件。</p>
+<hr>
+<h4 id="Element原组件Slider"><a href="#Element原组件Slider" class="headerlink" title="Element原组件Slider"></a>Element原组件Slider</h4><ul>
+<li>可以滑动</li>
+<li>可格式化滑点输出信息</li>
+</ul>
+<p>效果图及源码如下：</p>
+<p><img src="https://github.com/penglsh/images/raw/master/sad-final-report/Slider.png" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;block&quot;&gt;</span><br><span class="line">    &lt;span class=&quot;demonstration&quot;&gt;格式化 Tooltip&lt;/span&gt;</span><br><span class="line">    &lt;el-slider v-model=&quot;value4&quot; :format-tooltip=&quot;formatTooltip&quot;&gt;&lt;/el-slider&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  export default &#123;</span><br><span class="line">    data() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        value1: 0,</span><br><span class="line">        value2: 50,</span><br><span class="line">        value3: 36,</span><br><span class="line">        value4: 48,</span><br><span class="line">        value5: 42</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      formatTooltip(val) &#123;</span><br><span class="line">        return val / 100;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="目标样式"><a href="#目标样式" class="headerlink" title="目标样式"></a>目标样式</h4><ul>
+<li>进度条左右两端有开始时间和结束时间</li>
+<li>根据开始时间、当前时间和结束时间刷新进度条，即使用<strong>当前时间与开始时间的差占任务总时长的占比</strong>来更新进度</li>
+<li>格式化滑点输出：<ul>
+<li>当任务在进行中，显示任务剩余时间</li>
+<li>当任务已完成，根据完成时间定格进度，滑点显示已完成</li>
+<li>当任务由于发布者取消、领取者放弃或超时，进度定格在100处，滑点显示任务未完成</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="编码实现"><a href="#编码实现" class="headerlink" title="编码实现"></a>编码实现</h4><ol>
+<li><p>在<code>&lt;el-row&gt;</code>中分3列<code>&lt;el-col&gt;</code>，分别展示开始时间、进度条和结束时间，并设置好组件props以满足调用时传参所需。</p>
+<p>所传参数意义为：</p>
+<ul>
+<li>startTime：任务开始时间</li>
+<li>endTime：任务结束时间</li>
+<li>finNum：完成任务的人数（仅当任务为问卷任务时需要）</li>
+<li>missionState：任务当前状态（包括进行中、已完成、未完成即已结束）</li>
+<li>finishTime：任务完成的时间</li>
+<li>orderState：功能类似missionState，用于不同场景</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;el-row type=&quot;flex&quot; align=&quot;middle&quot;&gt;</span><br><span class="line">      &lt;el-col v-bind:span=&quot;5&quot; style=&quot;text-align: center&quot;&gt;&#123;&#123; startTime &#125;&#125;&lt;/el-col&gt;</span><br><span class="line">      &lt;el-col v-bind:span=&quot;14&quot;&gt;</span><br><span class="line">        &lt;el-slider&gt;&lt;/el-slider&gt;</span><br><span class="line">      &lt;/el-col&gt;</span><br><span class="line">      &lt;el-col v-bind:span=&quot;5&quot; style=&quot;text-align: center&quot;&gt;&#123;&#123; endTime &#125;&#125;&lt;/el-col&gt;</span><br><span class="line">    &lt;/el-row&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;TimeSlider&apos;,</span><br><span class="line"></span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  props: &#123;</span><br><span class="line">    startTime: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    endTime: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    finNum: &#123;</span><br><span class="line">      type: Number,</span><br><span class="line">      default: 0</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    missionState: &#123;</span><br><span class="line">      type: Number,</span><br><span class="line">      default: 0</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    finishTime: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    orderState: &#123;</span><br><span class="line">      type: Number,</span><br><span class="line">      default: 0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据开始时间和结束时间计算时间进度条每次跳动的距离</p>
+<p>下面得到的结果为任务时长，使用<strong>100除以上述结果并向下取整</strong>即可得到时间进度条每次跳动的距离</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">timeDiff (sTime, eTime) &#123;</span><br><span class="line">    <span class="keyword">let</span> startTime = <span class="keyword">new</span> <span class="built_in">Date</span>(sTime)</span><br><span class="line">    <span class="keyword">let</span> endTime = <span class="keyword">new</span> <span class="built_in">Date</span>(eTime)</span><br><span class="line">    <span class="keyword">let</span> leftHour = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> (endTime.getTime() &gt; startTime.getTime()) &#123;</span><br><span class="line">        <span class="keyword">let</span> msDiff = endTime.getTime() - startTime.getTime()</span><br><span class="line">        leftHour = <span class="built_in">Math</span>.floor(msDiff / (<span class="number">1000</span> * <span class="number">3600</span>))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> leftHour</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算当前时间距离开始时间过去了多久，并根据2计算的结果设置当前任务进度</p>
+<p>以下根据任务当前的状态设置进度值，若为进行中任务，则继续计算并持续更新进度，若为已完成则定格进度值，若为未完成（取消或超时），则进度值为100</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">passTime (startTime, endTime, finishTime) &#123;</span><br><span class="line">    <span class="keyword">let</span> sTime = <span class="keyword">new</span> <span class="built_in">Date</span>(startTime)</span><br><span class="line">    <span class="keyword">let</span> nowTime = <span class="built_in">Date</span>.now()</span><br><span class="line">    <span class="keyword">let</span> eTime = <span class="keyword">new</span> <span class="built_in">Date</span>(endTime)</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.finNum !== <span class="number">0</span> || <span class="keyword">this</span>.orderState === <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> finTime = <span class="keyword">new</span> <span class="built_in">Date</span>(finishTime)</span><br><span class="line">        <span class="keyword">let</span> passHour = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> (finTime.getTime() &gt; sTime.getTime()) &#123;</span><br><span class="line">            <span class="keyword">let</span> msDiff = finTime.getTime() - sTime.getTime()</span><br><span class="line">            passHour = <span class="built_in">Math</span>.ceil(msDiff / (<span class="number">1000</span> * <span class="number">3600</span>))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> passHour * (<span class="number">100.0</span> / <span class="keyword">this</span>.timeDiff(startTime, endTime))</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((<span class="keyword">this</span>.missionState &gt; <span class="number">2</span> &amp;&amp; <span class="keyword">this</span>.finNum === <span class="number">0</span>) || <span class="keyword">this</span>.orderState === <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nowTime &gt;= eTime.getTime()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> passHour = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> (nowTime &gt; sTime.getTime()) &#123;</span><br><span class="line">        <span class="keyword">let</span> msDiff = nowTime - sTime.getTime()</span><br><span class="line">        passHour = <span class="built_in">Math</span>.ceil(msDiff / (<span class="number">1000</span> * <span class="number">3600</span>))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> passHour * (<span class="number">100.0</span> / <span class="keyword">this</span>.timeDiff(startTime, endTime))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据需求格式化滑点的输出</p>
+<p>根据任务状态和需求设置滑点数据的显示</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">formatTooltip () &#123;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">this</span>.finNum !== <span class="number">0</span> &amp;&amp; <span class="keyword">this</span>.missionState === <span class="number">2</span>) || <span class="keyword">this</span>.orderState === <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'已完成'</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.missionState &gt; <span class="number">2</span> &amp;&amp; <span class="keyword">this</span>.finNum === <span class="number">0</span> &amp;&amp; <span class="keyword">this</span>.orderState !== <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'任务已结束或已取消（未完成）'</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.orderState === <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'任务已结束或已放弃（未完成）'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> currTime = <span class="built_in">Date</span>.now()</span><br><span class="line">    <span class="keyword">let</span> eTime = <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="keyword">this</span>.endTime.toString())</span><br><span class="line">    <span class="keyword">let</span> left = <span class="string">'任务未完成，已结束'</span></span><br><span class="line">    <span class="keyword">if</span> (eTime.getTime() &gt; currTime) &#123;</span><br><span class="line">        <span class="keyword">let</span> msDiff = eTime.getTime() - currTime</span><br><span class="line">        <span class="comment">// compute day left</span></span><br><span class="line">        <span class="keyword">let</span> leftDay = <span class="built_in">Math</span>.floor(msDiff / (<span class="number">1000</span> * <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span>))</span><br><span class="line">        <span class="comment">// hours left after computing day left</span></span><br><span class="line">        <span class="keyword">let</span> leaveForHour = msDiff % (<span class="number">1000</span> * <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span>)</span><br><span class="line">        <span class="comment">// compute hour left</span></span><br><span class="line">        <span class="keyword">let</span> leftHour = <span class="built_in">Math</span>.floor(leaveForHour / (<span class="number">1000</span> * <span class="number">60</span> * <span class="number">60</span>))</span><br><span class="line">        <span class="keyword">let</span> leaveForMinute = leaveForHour % (<span class="number">1000</span> * <span class="number">3600</span>)</span><br><span class="line">        <span class="keyword">let</span> leftMinute = <span class="built_in">Math</span>.floor(leaveForMinute / (<span class="number">1000</span> * <span class="number">60</span>))</span><br><span class="line">        <span class="keyword">let</span> leaveForSecond = leaveForMinute % (<span class="number">1000</span> * <span class="number">60</span>)</span><br><span class="line">        <span class="keyword">let</span> leftSecond = <span class="built_in">Math</span>.round(leaveForSecond / <span class="number">1000</span>)</span><br><span class="line">        left = <span class="string">'剩余'</span> + leftDay + <span class="string">'天'</span> + leftHour + <span class="string">'时'</span> + leftMinute + <span class="string">'分'</span> + leftSecond + <span class="string">'秒'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> left</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进度条不可人为改动，所以需要添加<code>disable</code></p>
+</li>
+</ol>
+<hr>
+<h4 id="完整代码及效果图"><a href="#完整代码及效果图" class="headerlink" title="完整代码及效果图"></a>完整代码及效果图</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;el-row type=&quot;flex&quot; align=&quot;middle&quot;&gt;</span><br><span class="line">      &lt;el-col v-bind:span=&quot;5&quot; style=&quot;text-align: center&quot;&gt;&#123;&#123; startTime &#125;&#125;&lt;/el-col&gt;</span><br><span class="line">      &lt;el-col v-bind:span=&quot;14&quot;&gt;</span><br><span class="line">        &lt;el-slider</span><br><span class="line">            v-bind:step=&quot;Math.floor(100 / timeDiff(startTime, endTime))&quot;</span><br><span class="line">            v-bind:value=&quot;passTime(startTime, endTime, finishTime)&quot;</span><br><span class="line">            v-bind:format-tooltip=&quot;formatTooltip&quot;</span><br><span class="line">            disabled&gt;</span><br><span class="line">        &lt;/el-slider&gt;</span><br><span class="line">      &lt;/el-col&gt;</span><br><span class="line">      &lt;el-col v-bind:span=&quot;5&quot; style=&quot;text-align: center&quot;&gt;&#123;&#123; endTime &#125;&#125;&lt;/el-col&gt;</span><br><span class="line">    &lt;/el-row&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;TimeSlider&apos;,</span><br><span class="line"></span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  props: &#123;</span><br><span class="line">    startTime: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    endTime: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    finNum: &#123;</span><br><span class="line">      type: Number,</span><br><span class="line">      default: 0</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    missionState: &#123;</span><br><span class="line">      type: Number,</span><br><span class="line">      default: 0</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    finishTime: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    orderState: &#123;</span><br><span class="line">      type: Number,</span><br><span class="line">      default: 0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  methods: &#123;</span><br><span class="line">    formatTooltip () &#123;</span><br><span class="line">      if ((this.finNum !== 0 &amp;&amp; this.missionState === 2) || this.orderState === 1) &#123;</span><br><span class="line">        return &apos;已完成&apos;</span><br><span class="line">      &#125; else if (this.missionState &gt; 2 &amp;&amp; this.finNum === 0 &amp;&amp; this.orderState !== 2) &#123;</span><br><span class="line">        return &apos;任务已结束或已取消（未完成）&apos;</span><br><span class="line">      &#125; else if (this.orderState === 2) &#123;</span><br><span class="line">        return &apos;任务已结束或已放弃（未完成）&apos;</span><br><span class="line">      &#125;</span><br><span class="line">      let currTime = Date.now()</span><br><span class="line">      let eTime = new Date(this.endTime.toString())</span><br><span class="line">      let left = &apos;任务未完成，已结束&apos;</span><br><span class="line">      if (eTime.getTime() &gt; currTime) &#123;</span><br><span class="line">        let msDiff = eTime.getTime() - currTime</span><br><span class="line">        // compute day left</span><br><span class="line">        let leftDay = Math.floor(msDiff / (1000 * 24 * 60 * 60))</span><br><span class="line">        // hours left after computing day left</span><br><span class="line">        let leaveForHour = msDiff % (1000 * 24 * 60 * 60)</span><br><span class="line">        // compute hour left</span><br><span class="line">        let leftHour = Math.floor(leaveForHour / (1000 * 60 * 60))</span><br><span class="line">        let leaveForMinute = leaveForHour % (1000 * 3600)</span><br><span class="line">        let leftMinute = Math.floor(leaveForMinute / (1000 * 60))</span><br><span class="line">        let leaveForSecond = leaveForMinute % (1000 * 60)</span><br><span class="line">        let leftSecond = Math.round(leaveForSecond / 1000)</span><br><span class="line">        left = &apos;剩余&apos; + leftDay + &apos;天&apos; + leftHour + &apos;时&apos; + leftMinute + &apos;分&apos; + leftSecond + &apos;秒&apos;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      return left</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    timeDiff (sTime, eTime) &#123;</span><br><span class="line">      let startTime = new Date(sTime)</span><br><span class="line">      let endTime = new Date(eTime)</span><br><span class="line">      let leftHour = 0</span><br><span class="line">      if (endTime.getTime() &gt; startTime.getTime()) &#123;</span><br><span class="line">        let msDiff = endTime.getTime() - startTime.getTime()</span><br><span class="line">        leftHour = Math.floor(msDiff / (1000 * 3600))</span><br><span class="line">      &#125;</span><br><span class="line">      return leftHour</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    passTime (startTime, endTime, finishTime) &#123;</span><br><span class="line">      let sTime = new Date(startTime)</span><br><span class="line">      let nowTime = Date.now()</span><br><span class="line">      let eTime = new Date(endTime)</span><br><span class="line">      if (this.finNum !== 0 || this.orderState === 1) &#123;</span><br><span class="line">        let finTime = new Date(finishTime)</span><br><span class="line">        let passHour = 0</span><br><span class="line">        if (finTime.getTime() &gt; sTime.getTime()) &#123;</span><br><span class="line">          let msDiff = finTime.getTime() - sTime.getTime()</span><br><span class="line">          passHour = Math.ceil(msDiff / (1000 * 3600))</span><br><span class="line">        &#125;</span><br><span class="line">        return passHour * (100.0 / this.timeDiff(startTime, endTime))</span><br><span class="line">      &#125; else if ((this.missionState &gt; 2 &amp;&amp; this.finNum === 0) || this.orderState === 2) &#123;</span><br><span class="line">        return 100</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      if (nowTime &gt;= eTime.getTime()) &#123;</span><br><span class="line">        return 100</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      let passHour = 0</span><br><span class="line">      if (nowTime &gt; sTime.getTime()) &#123;</span><br><span class="line">        let msDiff = nowTime - sTime.getTime()</span><br><span class="line">        passHour = Math.ceil(msDiff / (1000 * 3600))</span><br><span class="line">      &#125;</span><br><span class="line">      return passHour * (100.0 / this.timeDiff(startTime, endTime))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>效果图如下：</p>
+<p><img src="https://github.com/penglsh/images/raw/master/sad-final-report/TimeSlider.PNG" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+            <a href="/tags/element组件/" rel="tag"># element组件</a>
+          
+            <a href="/tags/Slider/" rel="tag"># Slider</a>
+          
+            <a href="/tags/时间进度条/" rel="tag"># 时间进度条</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/20/sad-hw9/" rel="next" title="系统分析与设计——作业9">
+                <i class="fa fa-chevron-left"></i> 系统分析与设计——作业9
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/28/16340179_penglsh/" rel="prev" title="16340179_penglsh_final_report">
+                16340179_penglsh_final_report <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Liusheng Peng">
+            
+              <p class="site-author-name" itemprop="name">Liusheng Peng</p>
+              <p class="site-description motion-element" itemprop="description">Be Myself</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/penglsh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Element原组件Slider"><span class="nav-number">2.</span> <span class="nav-text">Element原组件Slider</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#目标样式"><span class="nav-number">3.</span> <span class="nav-text">目标样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编码实现"><span class="nav-number">4.</span> <span class="nav-text">编码实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完整代码及效果图"><span class="nav-number">5.</span> <span class="nav-text">完整代码及效果图</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liusheng Peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("g2ukHNprIQ5LkFscVPeY1bY2-gzGzoHsz", "ExuIgrvqRnAwowX2TI2qukbD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
